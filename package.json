@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.1.1",
+    "cross-env": "^5.1.6",
     "express": "^4.16.3",
     "firebase": "^5.0.3",
     "jquery": "^3.3.1",
@@ -21,6 +22,7 @@
     "start": "node server/index.js",
     "start-react": "react-scripts start",
     "build": "react-scripts build",
+    "prod": "cross-env NODE_ENV=production react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
