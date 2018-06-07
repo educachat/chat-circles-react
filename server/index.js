@@ -3,7 +3,7 @@ const socketIO = require('socket.io');
 const path = require('path');
 // const SocketManager = require('./SocketManager');
 
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, '../build/index.html');
 const ASSETS = path.join(__dirname, '../build/static');
 
