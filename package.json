@@ -1,0 +1,27 @@
+{
+  "name": "chat-circles-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "express": "^4.16.3",
+    "firebase": "^5.0.3",
+    "jquery": "^3.3.1",
+    "moment": "^2.22.1",
+    "popper.js": "^1.14.3",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.4",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0",
+    "uuid": "^3.2.1"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "start-react": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
