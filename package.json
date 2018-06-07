@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "node server/index.js",
+    "postinstall": "react-scripts build",
     "start-react": "react-scripts start",
     "build": "react-scripts build",
     "prod": "cross-env NODE_ENV=production react-scripts build",
