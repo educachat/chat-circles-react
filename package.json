@@ -2,6 +2,7 @@
   "name": "chat-circles-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://chat-circles.euconectei.com.br",
   "dependencies": {
     "bootstrap": "^4.1.1",
     "cross-env": "^5.1.6",
