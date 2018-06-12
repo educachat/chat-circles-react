@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import Moment from 'moment';
 
-import { USER } from '../config/events';
+import { USER, MESSAGE } from '../config/events';
 import { API_URL, SITE_TITLE } from '../config/config';
 
 import { MessageForm } from './Messages';
 import { User } from './User';
 import UserService from '../services/UserService';
+import FirebaseService from '../services/FirebaseService';
 
 
 class ChatPage extends Component {
@@ -17,22 +18,38 @@ class ChatPage extends Component {
       users: [],
     };
 
-    this.onUserListed = this.onUserListed.bind(this);
+    this.onUserList = this.onUserList.bind(this);
   }
   
   componentDidMount() {
     const { socket } = this.props;
     socket.emit(USER.USER_LIST);
-    socket.on(USER.USER_LIST, this.onUserListed);
+    socket.on(USER.USER_LIST, this.onUserList);
+    socket.on(MESSAGE.MESSAGE_RECEIVED, this.onMessageReceived);
   }
 
-  onUserListed = (users) => {
+  onUserList = (users) => {
     this.setState({ users });
   };
 
+  onMessageReceived = (obj) => {
+
+    let { message, sender } = obj;
+    let elSender = document.querySelector(`#user-${sender.id}`);
+    let text = document.createElement('div');
+
+    text.innerText = message;
+    elSender.appendChild(text);
+
+    setTimeout(() => {
+      text.innerText = null;
+      elSender.removeChild(text);
+    }, (1+(0.04 * message.length))*1000);
+  }
+
   render() {
     const { socket } = this.props;
-    let { users } = this.state;
+    const { users } = this.state;
 
     let showUsers = users.map((user, i) => <User key={i} user={user} socket={socket} />);
     let me = users.find((user) => user.id === socket.id);
@@ -42,7 +59,7 @@ class ChatPage extends Component {
         <div id="chatArea" className="chat-area">
           { showUsers }
         </div>
-        <MessageForm me={me}socket={socket} />
+        <MessageForm me={me} socket={socket} />
       </main>
     );
   }
@@ -51,17 +68,31 @@ class ChatPage extends Component {
 
 const HelpPage = () => <div className="help-page" />;
 
-const LogPage = (props) => {
+class LogPage extends Component {
   
-  Moment.locale('pt-BR');
-  let messages = props.messages.map((message, i) => <li key={i}>({Moment(message.sendedAt).format('DD/MM/YYYY HH:mm:ss')}) {message.sender.username}: {message.message}</li>);
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: null,
+    };
+  }
+
+  componentDidMount() {
+    FirebaseService.getDataList('messages', (dataReceived) => this.setState({ messages: dataReceived }));
+  }
+
+  render() {
+    const { messages } = this.state;
+    Moment.locale('pt-BR');
+    let elMessages = messages.map((message, i) => <li key={i}>({Moment(message.sendedAt).format('DD/MM/YYYY HH:mm:ss')}) {message.sender.username}: {message.message}</li>);
 
 
-  return (<div className="log-page">
-    <ul>
-      { messages }
-    </ul>
-  </div>);
+    return (<div className="log-page">
+      <ul>
+        { elMessages }
+      </ul>
+    </div>);
+  }
 };
 
 class LoginPage extends Component {
@@ -86,9 +117,9 @@ class LoginPage extends Component {
     event.preventDefault();
     let { socket } = this.props;
     let me = UserService.createUser(socket.id, this.state.username);
-    console.log(me);
+    // console.log(me);
     this.setState({ me });
-    socket.emit('userAccessRoom', me);
+    socket.emit(USER.USER_JOIN_ROOM, me);
     this.props.history.push('/chat');
   }
 

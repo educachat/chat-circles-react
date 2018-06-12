@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import io from 'socket.io-client';
 
-import { USER_CONNECTED, LOGOUT } from '../config/events';
 import { API_URL } from '../config/config';
 import { routes } from '../config/routes';
 import { USER } from '../config/events';
-import FirebaseService from '../services/FirebaseService';
 
 import { Header } from './Parts';
 
@@ -18,41 +16,19 @@ export default class Layout extends Component {
     super(props);
 
     this.state = {
-      socket: null,
-      user: [],
-      messages: [],
+      socket: io(socketUrl),
     };
   }
 
-  componentWillMount() {
-    this.initSocket();
-  }
-
   componentDidMount() {
-    FirebaseService.getDataList('messages', (dataReceived) => this.setState({ messages: dataReceived }));
-  }
-
-  initSocket = () => {
-    const socket = io(socketUrl);
-    socket.on(USER.USER_CONNECTED, () => {
-      console.log('Connected');
+    const { socket } = this.state;
+    socket.on(USER.USER_CONNECTED, (id) => {
+      console.log(`Connected on id: ${id}`);
     });
-    this.setState({ socket });
-  }
-
-  setUser = (user) => {
-    const { socket } = this.state;
-    socket.emit(USER_CONNECTED, user);
-  }
-
-  logout = () => {
-    const { socket } = this.state;
-    socket.emit(LOGOUT);
-    this.setState({ user: null });
   }
 
   render() {
-    const { socket} = this.state;
+    const { socket } = this.state;
 
     return (
       <Router>
@@ -71,7 +47,7 @@ export default class Layout extends Component {
           <Route
             exact
             path={routes.LOG.URL}
-            render={routeProps => <routes.LOG.COMPONENT { ...routeProps } socket={socket} messages={this.state.messages} />}
+            render={routeProps => <routes.LOG.COMPONENT { ...routeProps } socket={socket} />}
           />
           <Route
             exact

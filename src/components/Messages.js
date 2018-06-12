@@ -14,10 +14,11 @@ class MessageForm extends Component {
     };
 
     this.handleMessage = this.handleMessage.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   handleMessage = (event) => {
-    let { socket } = this.props;
+    const { socket } = this.props;
     let obj = {
       id: socket.id,
       textLength: event.target.value.length || 0,
@@ -36,15 +37,22 @@ class MessageForm extends Component {
 
   onSubmit = (event) => {
     event.preventDefault();
+    const { me, socket } = this.props;
+    let obj = {
+      id: socket.id,
+      textLength: 0,
+    };
+    const userElement = document.querySelector(`#user-${obj.id}`);
 
     const { message } = this.state;
-    const { me, socket } = this.props;
     let messaging = { message, sender: me };
 
+    socket.emit(MESSAGE.MESSAGE_SEND, messaging);
     FirebaseService.pushData('messages', messaging);
-    socket.emit(MESSAGE.MESSAGE_SENT, messaging);
 
     document.querySelector('#messageInput').value=null;
+    userElement.classList.remove('typing');
+    socket.emit(USER.USER_TYPING, obj);
   }
 
   render() {
