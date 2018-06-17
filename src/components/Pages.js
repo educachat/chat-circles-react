@@ -38,6 +38,7 @@ class ChatPage extends Component {
     let elSender = document.querySelector(`#user-${sender.id}`);
     let text = document.createElement('div');
 
+    console.log(message);
     text.innerText = message;
     elSender.appendChild(text);
 

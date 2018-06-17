@@ -2,7 +2,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 const INDEX = path.join(__dirname, '../build/index.html');
 const ASSETS = path.join(__dirname, '../build/static');
 
@@ -59,7 +59,7 @@ io.on(USER.USER_CONNECT, (socket) => {
   });
 
   socket.on(MESSAGE.MESSAGE_SEND, (msg) => {
-    socket.to(room).emit(MESSAGE.MESSAGE_RECEIVED, msg);
+    io.sockets.in(room).emit(MESSAGE.MESSAGE_RECEIVED, msg);
   });
   
   onUserTyping = (obj) => {
