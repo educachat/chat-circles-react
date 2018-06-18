@@ -38,7 +38,6 @@ class ChatPage extends Component {
     let elSender = document.querySelector(`#user-${sender.id}`);
     let text = document.createElement('div');
 
-    console.log(message);
     text.innerText = message;
     elSender.appendChild(text);
 
@@ -118,7 +117,6 @@ class LoginPage extends Component {
     event.preventDefault();
     let { socket } = this.props;
     let me = UserService.createUser(socket.id, this.state.username);
-    // console.log(me);
     this.setState({ me });
     socket.emit(USER.USER_JOIN_ROOM, me);
     this.props.history.push('/chat');
@@ -145,20 +143,13 @@ class LogoutPage extends Component {
     };
 
     this.onUserList = this.onUserList.bind(this);
+    this.onLogout = this.onLogout.bind(this);
   }
   
   componentDidMount() {
     const { socket } = this.props;
-    socket.emit(USER.USER_LIST);
     socket.on(USER.USER_LIST, this.onUserList);
-
-    socket.on(USER.USER_DISCONNECT, (user) => {
-      let { users } = this.state;
-      console.log('users', users);
-      let index = users.indexOf(user);
-      users.splice(index);
-      console.log('users', users);
-    });
+    socket.emit(USER.USER_LIST);
   }
 
   onUserList = (users) => {
@@ -166,18 +157,8 @@ class LogoutPage extends Component {
   };
 
   onLogout = () => {
-    
-    let isMe = (user) => {
-      console.log('user.id', user.id)
-      console.log('socket.id', socket.id)
-      return user.id === socket.id;
-    }
-
     let { socket } = this.props;
-    let { users } = this.state;
-    let me = users.find(isMe);
-
-    socket.emit(USER.USER_DISCONNECT, me);
+    socket.emit(USER.USER_DISCONNECT);
   }
 
   render() {

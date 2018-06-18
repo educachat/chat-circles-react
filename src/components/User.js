@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { USER, MESSAGE } from '../config/events';
+import { USER } from '../config/events';
 import UserService from '../services/UserService';
 
 class User extends Component {

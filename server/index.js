@@ -72,9 +72,9 @@ io.on(USER.USER_CONNECT, (socket) => {
   // === Corrigir ===
 
 
-  socket.on(USER.USER_DISCONNECT, () => {
-    let user = users.find(x => x.id === socket.id);
-    // console.log(user);
+  socket.on(USER.USER_DISCONNECT, (user) => {
+    // let me = users.find(x => x.id === user.id);
+    console.log('user', user);
     io.to(room).emit(USER.USER_DISCONNECT, user);
   });
 
