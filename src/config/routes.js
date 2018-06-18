@@ -29,7 +29,7 @@ const routes = {
     COMPONENT: LogoutPage,
     NAME: 'Logout',
     ONLY_AUTH: true,
-    URL: '/',
+    URL: '/logout',
   },
 };
 

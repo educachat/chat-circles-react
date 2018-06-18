@@ -136,7 +136,58 @@ class LoginPage extends Component {
   }
 }
 
-const LogoutPage = () => <div className="logout-page" />;
+class LogoutPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: [],
+    };
+
+    this.onUserList = this.onUserList.bind(this);
+  }
+  
+  componentDidMount() {
+    const { socket } = this.props;
+    socket.emit(USER.USER_LIST);
+    socket.on(USER.USER_LIST, this.onUserList);
+
+    socket.on(USER.USER_DISCONNECT, (user) => {
+      let { users } = this.state;
+      console.log('users', users);
+      let index = users.indexOf(user);
+      users.splice(index);
+      console.log('users', users);
+    });
+  }
+
+  onUserList = (users) => {
+    this.setState({ users });
+  };
+
+  onLogout = () => {
+    
+    let isMe = (user) => {
+      console.log('user.id', user.id)
+      console.log('socket.id', socket.id)
+      return user.id === socket.id;
+    }
+
+    let { socket } = this.props;
+    let { users } = this.state;
+    let me = users.find(isMe);
+
+    socket.emit(USER.USER_DISCONNECT, me);
+  }
+
+  render() {
+    return (
+      <div className="logout-page">
+        <button onClick={this.onLogout}>Sair do Chat</button>
+      </div>
+    );
+  }
+}
 
 export {
   ChatPage,

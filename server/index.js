@@ -2,7 +2,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 const INDEX = path.join(__dirname, '../build/index.html');
 const ASSETS = path.join(__dirname, '../build/static');
 
@@ -72,10 +72,10 @@ io.on(USER.USER_CONNECT, (socket) => {
   // === Corrigir ===
 
 
-  socket.on('disconnect', () => {
+  socket.on(USER.USER_DISCONNECT, () => {
     let user = users.find(x => x.id === socket.id);
     // console.log(user);
-    socket.broadcast.emit('userLeft', user);
+    io.to(room).emit(USER.USER_DISCONNECT, user);
   });
 
 });
