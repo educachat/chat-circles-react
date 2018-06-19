@@ -7,8 +7,6 @@ import { API_URL, SITE_TITLE } from '../config/config';
 import { MessageForm } from './Messages';
 import { User } from './User';
 import UserService from '../services/UserService';
-import FirebaseService from '../services/FirebaseService';
-
 
 class ChatPage extends Component {
   
@@ -73,18 +71,19 @@ class LogPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: null,
+      messages: props.messages,
     };
   }
 
-  componentDidMount() {
-    FirebaseService.getDataList('messages', (dataReceived) => this.setState({ messages: dataReceived }));
-  }
-
   render() {
-    const { messages } = this.state;
+    const { messages } = this.props;
     Moment.locale('pt-BR');
-    let elMessages = messages.map((message, i) => <li key={i}>({Moment(message.sendedAt).format('DD/MM/YYYY HH:mm:ss')}) {message.sender.username}: {message.message}</li>);
+    let elMessages = null;
+    if (messages) {
+      elMessages = messages.map((message, i) => <li key={i}>({Moment(message.sendedAt).format('DD/MM/YYYY HH:mm:ss')}) {message.sender.username}: {message.message}</li>);
+    } else {
+      elMessages = <li>Sem mensagens a serem exibidas...</li>
+    }
 
 
     return (<div className="log-page">

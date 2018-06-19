@@ -7,6 +7,7 @@ import { routes } from '../config/routes';
 import { USER } from '../config/events';
 
 import { Header } from './Parts';
+import FirebaseService from '../services/FirebaseService';
 
 const socketUrl = API_URL;
 
@@ -17,6 +18,7 @@ export default class Layout extends Component {
 
     this.state = {
       socket: io(socketUrl),
+      messages: null,
     };
   }
 
@@ -25,10 +27,11 @@ export default class Layout extends Component {
     socket.on(USER.USER_CONNECTED, (id) => {
       console.log(`Connected on id: ${id}`);
     });
+    FirebaseService.getDataList('messages', (dataReceived) => this.setState({ messages: dataReceived }));
   }
 
   render() {
-    const { socket } = this.state;
+    const { socket, messages } = this.state;
 
     return (
       <Router>
@@ -47,7 +50,7 @@ export default class Layout extends Component {
           <Route
             exact
             path={routes.LOG.URL}
-            render={routeProps => <routes.LOG.COMPONENT { ...routeProps } socket={socket} />}
+            render={routeProps => <routes.LOG.COMPONENT { ...routeProps } socket={socket} messages={messages} />}
           />
           <Route
             exact
