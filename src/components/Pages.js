@@ -8,6 +8,8 @@ import { MessageForm } from './Messages';
 import { User } from './User';
 import UserService from '../services/UserService';
 
+import Background from './chat-bg.png';
+
 class ChatPage extends Component {
   
   constructor(props) {
@@ -54,7 +56,7 @@ class ChatPage extends Component {
 
     return (
       <main>
-        <div id="chatArea" className="chat-area">
+        <div id="chatArea" className="chat-area" style={{ backgroundImage: `url(${Background})`}}>
           { showUsers }
         </div>
         <MessageForm me={me} socket={socket} />
