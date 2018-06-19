@@ -44,7 +44,7 @@ class ChatPage extends Component {
     setTimeout(() => {
       text.innerText = null;
       elSender.removeChild(text);
-    }, (3+(2 * message.length))*1000);
+    }, (5+(0.06 * message.length))*1000);
   }
 
   render() {
